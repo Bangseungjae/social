@@ -1,0 +1,34 @@
+### POST posts
+POST localhost:8080/v1/posts
+Content-Type: application/json
+
+{
+  "title": "New post",
+  "content": "Hey guys this is my first post2",
+  "tags": ["tags1", "tags2"]
+}
+
+### GET posts
+GET localhost:8080/v1/posts/13
+Content-Type: application/json
+
+### DELETE posts
+DELETE localhost:8080/v1/posts/1
+Content-Type: application/json
+
+### PATCH posts
+PATCH localhost:8080/v1/posts/2
+Content-Type: application/json
+
+{
+  "title": "updated5",
+  "content": "updated content"
+}
+
+### POST comments
+POST localhost:8080/v1/posts/13/comments
+Content-Type: application/json
+
+{
+  "content": "안녕하세요~ 멋진 글이네요~"
+}

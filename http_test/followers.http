@@ -1,0 +1,15 @@
+### PUT follow
+PUT localhost:8080/v1/users/1/follow
+Content-Type: application/json
+
+{
+  "user_id": 4
+}
+
+### PUT unfollow
+PUT localhost:8080/v1/users/1/unfollow
+Content-Type: application/json
+
+{
+  "user_id": 4
+}

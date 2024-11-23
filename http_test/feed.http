@@ -1,0 +1,7 @@
+### feed nomal
+GET localhost:8080/v1/users/4/feed
+Content-Type: application/json
+
+### feed
+GET localhost:8080/v1/users/4/feed?limit=10&offset=0&search=Fitness&tags=Health&sort=desc
+Content-Type: application/json
