@@ -3,15 +3,33 @@ package main
 import (
 	db2 "Bangseungjae/social/internal/db"
 	"Bangseungjae/social/internal/env"
-	internal_store "Bangseungjae/social/internal/store"
+	internalstore "Bangseungjae/social/internal/store"
 	"log"
 )
 
 const version = "0.0.1"
 
+//	@title			GopherSocial API
+//	@description	API for GopherSocial, a social network for gopher
+//	@termsOfService	http://swagger.io/terms/
+
+//	@contact.name	API Support
+//	@contact.url	http://www.swagger.io/support
+//	@contact.email	support@swagger.io
+
+//	@license.name	Apache 2.0
+//	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @BasePath					/v1
+//
+// @securityDefinitions.apikey	ApiKeyAuth
+// @in							header
+// @name						Authorization
+// @description
 func main() {
 	cfg := config{
-		addr: env.GetString("ADDR", ":8080"),
+		addr:   env.GetString("ADDR", ":8080"),
+		apiURL: env.GetString("EXTERNAL_URL", "localhost:8080"),
 		db: dbConfig{
 			addr:         env.GetString("DB_ADDR", "postgres://admin:adminpassword@localhost/socialnetwork?sslmode=disable"),
 			maxOpenConns: env.GetInt("DB_MAX_OPEN_CONNS", 30),
@@ -33,7 +51,7 @@ func main() {
 		log.Panic(err)
 	}
 
-	store := internal_store.NewStorage(db)
+	store := internalstore.NewStorage(db)
 
 	app := &application{
 		config: cfg,
