@@ -87,3 +87,16 @@ go get github.com/go-playground/validator/v10
 # Then import the validator package into your own code.
 import "github.com/go-playground/validator/v10"
 ```
+
+### Logger
+```go
+go get -u go.uber.org/zap
+
+// 설탕문법
+	logger := zap.Must(zap.NewProduction()).Sugar() // .Sugar로 생성
+	app.logger.Infow( // Info -> Infow
+		"server has started",
+		zap.String("addr", app.config.addr),
+		"env", app.config.env,
+	)
+```

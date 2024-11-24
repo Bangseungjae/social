@@ -4,7 +4,7 @@ import (
 	db2 "Bangseungjae/social/internal/db"
 	"Bangseungjae/social/internal/env"
 	internalstore "Bangseungjae/social/internal/store"
-	"log"
+	"go.uber.org/zap"
 )
 
 const version = "0.0.1"
@@ -38,6 +38,11 @@ func main() {
 		},
 		env: env.GetString("ENV", "development"),
 	}
+
+	// Logger
+	logger := zap.Must(zap.NewProduction()).Sugar()
+	defer logger.Sync()
+
 	db, err := db2.New(
 		cfg.db.addr,
 		cfg.db.maxOpenConns,
@@ -45,10 +50,10 @@ func main() {
 		cfg.db.maxIdleTime,
 	)
 	defer db.Close()
-	log.Printf("database connection pool establish")
+	logger.Info("database connection pool establish")
 
 	if err != nil {
-		log.Panic(err)
+		logger.Panic(err)
 	}
 
 	store := internalstore.NewStorage(db)
@@ -56,9 +61,10 @@ func main() {
 	app := &application{
 		config: cfg,
 		store:  store,
+		logger: logger,
 	}
 
 	mux := app.mount()
 
-	log.Fatal(app.run(mux))
+	logger.Fatal(app.run(mux))
 }

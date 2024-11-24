@@ -7,7 +7,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/swaggo/http-swagger/v2"
-	"log"
+	"go.uber.org/zap"
 	"net/http"
 	"time"
 )
@@ -15,6 +15,7 @@ import (
 type application struct {
 	config config
 	store  store.Storage
+	logger *zap.SugaredLogger
 }
 
 type config struct {
@@ -91,6 +92,10 @@ func (app *application) run(mux http.Handler) error {
 		ReadTimeout:  time.Second * 10,
 		IdleTimeout:  time.Minute,
 	}
-	log.Printf("server has started at %s\n", app.config.addr)
+	app.logger.Infow(
+		"server has started",
+		zap.String("addr", app.config.addr),
+		"env", app.config.env,
+	)
 	return srv.ListenAndServe()
 }
