@@ -1,3 +1,17 @@
 ### GET users
 GET localhost:8080/v1/users/21
 Content-Type: application/json
+
+### POST /authentication/user
+POST localhost:8080/v1/authentication/user
+Content-Type: application/json
+
+{
+  "email": "tmdwo5825@gmail.com",
+  "password": "bsj1209vv",
+  "username": "bsj12103vv"
+}
+
+
+### PUT /activate/{token}
+PUT localhost:8080/v1/users/activate/e8eb7261-b9c0-440b-8128-dd95575ad824

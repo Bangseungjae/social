@@ -3,6 +3,7 @@ package main
 import (
 	db2 "github.com/Bangseungjae/social/internal/db"
 	"github.com/Bangseungjae/social/internal/env"
+	mailer2 "github.com/Bangseungjae/social/internal/mailer"
 	internalstore "github.com/Bangseungjae/social/internal/store"
 	"go.uber.org/zap"
 	"time"
@@ -29,8 +30,9 @@ const version = "0.0.1"
 // @description
 func main() {
 	cfg := config{
-		addr:   env.GetString("ADDR", ":8080"),
-		apiURL: env.GetString("EXTERNAL_URL", "localhost:8080"),
+		addr:        env.GetString("ADDR", ":8080"),
+		apiURL:      env.GetString("EXTERNAL_URL", "localhost:8080"),
+		frontendURL: env.GetString("FRONTEND_URL", "http://localhost:4000"),
 		db: dbConfig{
 			addr:         env.GetString("DB_ADDR", "postgres://admin:adminpassword@localhost/socialnetwork?sslmode=disable"),
 			maxOpenConns: env.GetInt("DB_MAX_OPEN_CONNS", 30),
@@ -40,6 +42,10 @@ func main() {
 		env: env.GetString("ENV", "development"),
 		mail: mailConfig{
 			exp: time.Hour * 24 * 3, // 3 days
+			sendGrid: sendGridConfig{
+				fromEmail: env.GetString("FROM_EMAIL", ""),
+				apiKey:    env.GetString("SENDGRID_API_KEY", ""),
+			},
 		},
 	}
 
@@ -62,10 +68,13 @@ func main() {
 
 	store := internalstore.NewStorage(db)
 
+	mailer := mailer2.NewSendgrid(cfg.mail.sendGrid.apiKey, cfg.mail.sendGrid.fromEmail)
+
 	app := &application{
 		config: cfg,
 		store:  store,
 		logger: logger,
+		mailer: mailer,
 	}
 
 	mux := app.mount()
