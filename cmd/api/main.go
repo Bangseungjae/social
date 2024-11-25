@@ -1,10 +1,11 @@
 package main
 
 import (
-	db2 "Bangseungjae/social/internal/db"
-	"Bangseungjae/social/internal/env"
-	internalstore "Bangseungjae/social/internal/store"
+	db2 "github.com/Bangseungjae/social/internal/db"
+	"github.com/Bangseungjae/social/internal/env"
+	internalstore "github.com/Bangseungjae/social/internal/store"
 	"go.uber.org/zap"
+	"time"
 )
 
 const version = "0.0.1"
@@ -37,6 +38,9 @@ func main() {
 			maxIdleTime:  env.GetString("DB_MAX_IDLE_TIME", "15m"),
 		},
 		env: env.GetString("ENV", "development"),
+		mail: mailConfig{
+			exp: time.Hour * 24 * 3, // 3 days
+		},
 	}
 
 	// Logger

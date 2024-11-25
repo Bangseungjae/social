@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Bangseungjae/social/internal/store"
+	"github.com/Bangseungjae/social/internal/store"
 	"net/http"
 )
 

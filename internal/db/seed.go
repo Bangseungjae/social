@@ -1,10 +1,10 @@
 package db
 
 import (
-	"Bangseungjae/social/internal/store"
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/Bangseungjae/social/internal/store"
 	"log"
 	"math/rand"
 )

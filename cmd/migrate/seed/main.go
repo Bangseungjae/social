@@ -1,9 +1,9 @@
 package main
 
 import (
-	"Bangseungjae/social/internal/db"
-	"Bangseungjae/social/internal/env"
-	"Bangseungjae/social/internal/store"
+	"github.com/Bangseungjae/social/internal/db"
+	"github.com/Bangseungjae/social/internal/env"
+	"github.com/Bangseungjae/social/internal/store"
 	"log"
 )
 
