@@ -1,9 +1,9 @@
 package main
 
 import (
-	"Bangseungjae/social/internal/store"
 	"context"
 	"errors"
+	"github.com/Bangseungjae/social/internal/store"
 	"github.com/go-chi/chi/v5"
 	"net/http"
 	"strconv"
