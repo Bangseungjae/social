@@ -1,2 +1,5 @@
 ### Health Check
 GET localhost:8080/v1/health
+Authorization: Basic YWRtaW46YWRtaW4K
+// echo 'admin:admin' | base64
+// YW1kaW46YWRtaW4K
