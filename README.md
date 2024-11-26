@@ -17,6 +17,8 @@ air
 go get -u github.com/go-chi/chi/v5
 
 go get github.com/go-chi/cors
+
+go get github.com/golang-jwt/jwt/v5
 ```
 
 핫 리로드

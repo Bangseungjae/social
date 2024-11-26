@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/Bangseungjae/social/docs"
+	"github.com/Bangseungjae/social/internal/auth"
 	"github.com/Bangseungjae/social/internal/mailer"
 	"github.com/Bangseungjae/social/internal/store"
 	"github.com/go-chi/chi/v5"
@@ -15,10 +16,11 @@ import (
 )
 
 type application struct {
-	config config
-	store  store.Storage
-	logger *zap.SugaredLogger
-	client mailer.Client
+	config        config
+	store         store.Storage
+	logger        *zap.SugaredLogger
+	client        mailer.Client
+	authenticator auth.Authenticator
 }
 
 type config struct {
@@ -118,6 +120,7 @@ func (app *application) mount() http.Handler {
 		// Public routes
 		r.Route("/authentication", func(r chi.Router) {
 			r.Post("/user", app.registerUserHandler)
+			r.Post("/token", app.createTokenHandler)
 		})
 	})
 
