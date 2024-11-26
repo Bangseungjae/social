@@ -1,15 +1,8 @@
 ### PUT follow
-PUT localhost:8080/v1/users/1/follow
+PUT localhost:8080/v1/users/4/follow
 Content-Type: application/json
-
-{
-  "user_id": 4
-}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJnb3BoZXJzb2NpYWwiLCJleHAiOjE3MzI4OTEwMzUsImlhdCI6MTczMjYzMTgzNSwiaXNzIjoiZ29waGVyc29jaWFsIiwibmJmIjoxNzMyNjMxODM1LCJzdWIiOjI0fQ.Kaws1RbGVlneLWPiA2IphHkbuKioxqL3EsxEZiztaBs
 
 ### PUT unfollow
 PUT localhost:8080/v1/users/1/unfollow
 Content-Type: application/json
-
-{
-  "user_id": 4
-}

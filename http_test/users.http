@@ -7,13 +7,21 @@ POST localhost:8080/v1/authentication/user
 Content-Type: application/json
 
 {
-  "email": "tmdwdoddddddsddfd@gmail.com",
-  "password": "bsj1209vv",
-  "username": "bsj1ddd21d0dd3ddvd2v"
+  "email": "sdfe@gmail.com",
+  "password": "sefd",
+  "username": "sfe12"
 }
 
 
 
-//51d1d310-f1ec-424d-b6bb-aa751eccdc22
 ### PUT /activate/{token}
-PUT localhost:8080/v1/users/activate/087bbe39-2e6b-401d-9346-c59ed2a44713
+PUT localhost:8080/v1/users/activate/c710de96-5f0e-40f9-8fdd-b4dbdb5c23bc
+
+### POST /authentication/token
+POST localhost:8080/v1/authentication/token
+Content-Type: application/json
+
+{
+  "email": "sdfe@gmail.com",
+  "password": "sefd"
+}

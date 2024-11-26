@@ -33,6 +33,10 @@ type password struct {
 	hash []byte
 }
 
+func (p *password) Compare(text string) error {
+	return bcrypt.CompareHashAndPassword(p.hash, []byte(text))
+}
+
 func (s *UserStore) Delete(ctx context.Context, userID int64) error {
 	return withTx(s.db, ctx, func(tx *sql.Tx) error {
 		if err := s.delete(ctx, tx, userID); err != nil {

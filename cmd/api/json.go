@@ -41,4 +41,6 @@ func (app *application) jsonResponse(w http.ResponseWriter, status int, data any
 	return writeJSON(w, status, &envelop{Data: data})
 }
 
-// app.jsonResponse
+func (app *application) noContentResponse(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusNoContent)
+}

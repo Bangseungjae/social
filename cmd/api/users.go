@@ -64,10 +64,6 @@ func (app *application) getUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-type FollowUser struct {
-	UserID int64 `json:"user_id"`
-}
-
 // FollowUser godoc
 //
 //	@Summary		Follows a user
@@ -83,15 +79,15 @@ type FollowUser struct {
 //	@Router			/users/{userID}/follow [put]
 func (app *application) followUserHandler(w http.ResponseWriter, r *http.Request) {
 	followerUser := getUserFromContext(r)
-
-	// TODO: Revert back to auth userID from ctx
-	var payload FollowUser
-	if err := readJSON(w, r, &payload); err != nil {
+	followedUserID, err := strconv.ParseInt(chi.URLParam(r, "userID"), 10, 64)
+	if err != nil {
 		app.badRequestResponse(w, r, err)
+		return
 	}
+
 	ctx := r.Context()
 
-	if err := app.store.Followers.Follow(ctx, followerUser.ID, payload.UserID); err != nil {
+	if err := app.store.Followers.Follow(ctx, followedUserID, followerUser.ID); err != nil {
 		switch {
 		case errors.Is(err, store.ErrConflict):
 			app.conflictResponse(w, r, err)
@@ -102,9 +98,7 @@ func (app *application) followUserHandler(w http.ResponseWriter, r *http.Request
 		}
 	}
 
-	if err := app.jsonResponse(w, http.StatusNoContent, nil); err != nil {
-		app.internalServerError(w, r, err)
-	}
+	app.noContentResponse(w)
 }
 
 // UnfollowUser gdoc
@@ -121,23 +115,22 @@ func (app *application) followUserHandler(w http.ResponseWriter, r *http.Request
 //	@Security		ApiKeyAuth
 //	@Router			/users/{userID}/unfollow [put]
 func (app *application) unfollowUserHandler(w http.ResponseWriter, r *http.Request) {
-	unfollowedUser := getUserFromContext(r)
+	followerUser := getUserFromContext(r)
 
-	// TODO: Revert back to auth userID from ctx
-	var payload FollowUser
-	if err := readJSON(w, r, &payload); err != nil {
+	unfollowedID, err := strconv.ParseInt(chi.URLParam(r, "userID"), 10, 64)
+	if err != nil {
 		app.badRequestResponse(w, r, err)
+		return
 	}
+
 	ctx := r.Context()
 
-	if err := app.store.Followers.Unfollow(ctx, unfollowedUser.ID, payload.UserID); err != nil {
+	if err := app.store.Followers.Unfollow(ctx, followerUser.ID, unfollowedID); err != nil {
 		app.internalServerError(w, r, err)
 		return
 	}
 
-	if err := app.jsonResponse(w, http.StatusNoContent, nil); err != nil {
-		app.internalServerError(w, r, err)
-	}
+	app.noContentResponse(w)
 }
 
 func (app *application) userContextMiddleware(next http.Handler) http.Handler {
