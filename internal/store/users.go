@@ -66,11 +66,10 @@ func (s *UserStore) Activate(ctx context.Context, token string) error {
 
 		// 2. update the user
 		user.IsActive = true
-		if err != nil {
-			if err := s.update(ctx, tx, user); err != nil {
-				return err
-			}
+		if err := s.update(ctx, tx, user); err != nil {
+			return err
 		}
+
 		// 3. clean the invitations
 		if err := s.deleteUserInvitations(ctx, tx, user.ID); err != nil {
 			return err
@@ -97,15 +96,17 @@ WHERE id = $4
 
 func (s *UserStore) getUserFromInvitation(ctx context.Context, tx *sql.Tx, token string) (*User, error) {
 	query := `
-SELECT u.id, u.username, u.email, u.created_at, u.is_active FROM users u
-JOIN user_invitations ui ON u.id = ui.user_id
-WHERE ui.token = $1 AND ui.expiry > $2
-`
-	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
-	defer cancel()
+		SELECT u.id, u.username, u.email, u.created_at, u.is_active
+		FROM users u
+		JOIN user_invitations ui ON u.id = ui.user_id
+		WHERE ui.token = $1 AND ui.expiry > $2
+	`
 
 	hash := sha256.Sum256([]byte(token))
 	hashToken := hex.EncodeToString(hash[:])
+
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
+	defer cancel()
 
 	user := &User{}
 	err := tx.QueryRowContext(ctx, query, hashToken, time.Now()).Scan(
@@ -116,15 +117,15 @@ WHERE ui.token = $1 AND ui.expiry > $2
 		&user.IsActive,
 	)
 	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
+		switch err {
+		case sql.ErrNoRows:
 			return nil, ErrNotFound
 		default:
 			return nil, err
 		}
 	}
-	return user, nil
 
+	return user, nil
 }
 
 func (p *password) Set(text string) error {
@@ -236,5 +237,6 @@ func (s *UserStore) deleteUserInvitations(ctx context.Context, tx *sql.Tx, userI
 	if err != nil {
 		return err
 	}
+
 	return nil
 }

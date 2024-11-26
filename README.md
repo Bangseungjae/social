@@ -15,6 +15,8 @@ air
 
 ```text
 go get -u github.com/go-chi/chi/v5
+
+go get github.com/go-chi/cors
 ```
 
 핫 리로드
@@ -99,4 +101,11 @@ go get -u go.uber.org/zap
 		zap.String("addr", app.config.addr),
 		"env", app.config.env,
 	)
+```
+
+
+### web
+```shell
+cd web
+npm create vite@latest . -- --template react-ts
 ```

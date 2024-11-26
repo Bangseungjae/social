@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"github.com/Bangseungjae/social/internal/mailer"
 	"github.com/Bangseungjae/social/internal/store"
@@ -66,10 +67,10 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 
 	err := app.store.Users.CreateAndInvite(ctx, user, hashToken, app.config.mail.exp)
 	if err != nil {
-		switch err {
-		case store.ErrDuplicateEmail:
+		switch {
+		case errors.Is(err, store.ErrDuplicateEmail):
 			app.badRequestResponse(w, r, err)
-		case store.ErrDuplicateUsername:
+		case errors.Is(err, store.ErrDuplicateUsername):
 			app.badRequestResponse(w, r, err)
 		default:
 			app.internalServerError(w, r, err)
@@ -93,7 +94,7 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 	}
 
 	// send mail
-	status, err := app.mailer.Send(mailer.UserWelcomeTemplate, user.Username, user.Email, vars, !isProdEnv)
+	status, err := app.client.Send(mailer.UserWelcomeTemplate, user.Username, user.Email, vars, !isProdEnv)
 	if err != nil {
 		app.logger.Errorw("error sending welcome email", "error", err)
 

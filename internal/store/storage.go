@@ -14,28 +14,32 @@ var (
 )
 
 type Storage struct {
-	Posts interface {
-		Create(context.Context, *Post) error
-		GetByID(context.Context, int64) (*Post, error)
-		Delete(context.Context, int64) error
-		Update(context.Context, *Post) error
-		GetUserFeed(context.Context, int64, PaginatedFeedQuery) ([]PostWithMetadata, error)
-	}
-	Users interface {
-		Create(context.Context, *sql.Tx, *User) error
-		GetByID(context.Context, int64) (*User, error)
-		CreateAndInvite(ctx context.Context, user *User, token string, exp time.Duration) error
-		Activate(ctx context.Context, token string) error
-		Delete(ctx context.Context, userID int64) error
-	}
-	Comments interface {
-		GetByPostID(context.Context, int64) ([]Comment, error)
-		Create(context.Context, *Comment) error
-	}
-	Followers interface {
-		Follow(ctx context.Context, followerID, userID int64) error
-		Unfollow(ctx context.Context, followerID, userID int64) error
-	}
+	Posts
+	Users
+	Comments
+	Followers
+}
+type Posts interface {
+	Create(context.Context, *Post) error
+	GetByID(context.Context, int64) (*Post, error)
+	Delete(context.Context, int64) error
+	Update(context.Context, *Post) error
+	GetUserFeed(context.Context, int64, PaginatedFeedQuery) ([]PostWithMetadata, error)
+}
+type Users interface {
+	Create(context.Context, *sql.Tx, *User) error
+	GetByID(context.Context, int64) (*User, error)
+	CreateAndInvite(ctx context.Context, user *User, token string, exp time.Duration) error
+	Activate(ctx context.Context, token string) error
+	Delete(ctx context.Context, userID int64) error
+}
+type Comments interface {
+	GetByPostID(context.Context, int64) ([]Comment, error)
+	Create(context.Context, *Comment) error
+}
+type Followers interface {
+	Follow(ctx context.Context, followerID, userID int64) error
+	Unfollow(ctx context.Context, followerID, userID int64) error
 }
 
 func NewStorage(db *sql.DB) Storage {

@@ -7,11 +7,13 @@ POST localhost:8080/v1/authentication/user
 Content-Type: application/json
 
 {
-  "email": "tmdwo5825@gmail.com",
+  "email": "tmdwdoddddddsddfd@gmail.com",
   "password": "bsj1209vv",
-  "username": "bsj12103vv"
+  "username": "bsj1ddd21d0dd3ddvd2v"
 }
 
 
+
+//51d1d310-f1ec-424d-b6bb-aa751eccdc22
 ### PUT /activate/{token}
-PUT localhost:8080/v1/users/activate/e8eb7261-b9c0-440b-8128-dd95575ad824
+PUT localhost:8080/v1/users/activate/087bbe39-2e6b-401d-9346-c59ed2a44713
