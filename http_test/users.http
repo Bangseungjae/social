@@ -7,15 +7,15 @@ POST localhost:8080/v1/authentication/user
 Content-Type: application/json
 
 {
-  "email": "sdfe@gmail.com",
-  "password": "sefd",
-  "username": "sfe12"
+  "email": "tmdwod12@naver.com",
+  "password": "sadf",
+  "username": "sddfsdf"
 }
 
 
 
 ### PUT /activate/{token}
-PUT localhost:8080/v1/users/activate/c710de96-5f0e-40f9-8fdd-b4dbdb5c23bc
+PUT localhost:8080/v1/users/activate/59278bd1-71ae-49e2-b900-0acffd29278b
 
 ### POST /authentication/token
 POST localhost:8080/v1/authentication/token
@@ -24,4 +24,13 @@ Content-Type: application/json
 {
   "email": "sdfe@gmail.com",
   "password": "sefd"
+}
+
+### POST /authentication/token [ADMIN]
+POST localhost:8080/v1/authentication/token
+Content-Type: application/json
+
+{
+  "email": "tmdwod12@naver.com",
+  "password": "sadf"
 }

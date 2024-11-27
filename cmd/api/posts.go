@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/Bangseungjae/social/internal/store"
 	"github.com/go-chi/chi/v5"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -34,6 +35,7 @@ type CreatePostPayload struct {
 //	@Security		ApiKeyAuth
 //	@Router			/posts [post]
 func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("start createPostHandler")
 	var payload CreatePostPayload
 	if err := readJSON(w, r, &payload); err != nil {
 		app.badRequestResponse(w, r, err)

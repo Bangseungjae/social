@@ -1,6 +1,7 @@
 ### POST posts
 POST localhost:8080/v1/posts
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJnb3BoZXJzb2NpYWwiLCJleHAiOjE3MzI5NTYxMDMsImlhdCI6MTczMjY5NjkwMywiaXNzIjoiZ29waGVyc29jaWFsIiwibmJmIjoxNzMyNjk2OTAzLCJzdWIiOjEwNX0.Ad3QlcIqkdvLYrv75_v1ghXsJB9nEqcOkD8OuLh5LYg
 
 {
   "title": "New post",
@@ -17,8 +18,9 @@ DELETE localhost:8080/v1/posts/1
 Content-Type: application/json
 
 ### PATCH posts
-PATCH localhost:8080/v1/posts/2
+PATCH localhost:8080/v1/posts/4
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJnb3BoZXJzb2NpYWwiLCJleHAiOjE3MzI5NTYxMDMsImlhdCI6MTczMjY5NjkwMywiaXNzIjoiZ29waGVyc29jaWFsIiwibmJmIjoxNzMyNjk2OTAzLCJzdWIiOjEwNX0.Ad3QlcIqkdvLYrv75_v1ghXsJB9nEqcOkD8OuLh5LYg
 
 {
   "title": "updated5",

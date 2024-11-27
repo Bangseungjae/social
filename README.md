@@ -111,3 +111,8 @@ go get -u go.uber.org/zap
 cd web
 npm create vite@latest . -- --template react-ts
 ```
+
+### Redis
+```shell
+docker run -d --rm --name social-redis -p 6379:6379 redis:6.2-alpine redis-server --loglevel warning
+```
