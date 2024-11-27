@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/Bangseungjae/social/internal/store"
 	"github.com/golang-jwt/jwt/v5"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -28,7 +27,6 @@ func (app *application) AuthTokenMiddleware(next http.Handler) http.Handler {
 		}
 		token := parts[1]
 		jwtToken, err := app.authenticator.ValidateToken(token)
-		log.Printf("token: %s", jwtToken.Raw)
 		if err != nil {
 			app.unauthorizedErrorResponse(w, r, err)
 			return
@@ -43,8 +41,7 @@ func (app *application) AuthTokenMiddleware(next http.Handler) http.Handler {
 
 		ctx := r.Context()
 
-		user, err := app.store.Users.GetByID(ctx, userID)
-		log.Printf("AuthTokenMiddleware user id: %d", user.ID)
+		user, err := app.getUser(ctx, userID)
 
 		if err != nil {
 			app.unauthorizedErrorResponse(w, r, err)
@@ -130,4 +127,26 @@ func (app *application) checkRolePrecedence(ctx context.Context, user *store.Use
 	}
 
 	return user.Role.Level >= role.Level, nil
+}
+
+func (app *application) getUser(ctx context.Context, userID int64) (*store.User, error) {
+	if !app.config.redisCfg.enabled {
+		app.logger.Info("getUser pass cache")
+		return app.store.Users.GetByID(ctx, userID)
+	}
+	user, err := app.cacheStorage.Users.Get(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	if user == nil {
+		user, err = app.store.Users.GetByID(ctx, userID)
+		if err != nil {
+			return nil, err
+		}
+		if err := app.cacheStorage.Users.Set(ctx, user); err != nil {
+			return nil, err
+		}
+	}
+	return user, nil
 }

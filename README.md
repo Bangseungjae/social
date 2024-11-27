@@ -115,4 +115,17 @@ npm create vite@latest . -- --template react-ts
 ### Redis
 ```shell
 docker run -d --rm --name social-redis -p 6379:6379 redis:6.2-alpine redis-server --loglevel warning
+
+go get github.com/go-redis/redis/v8
+
+docker exec -it 1d3f8b90887d redis-cli KEYS "*"
+(empty array)
+
+ docker exec -it 1d3f8b90887d redis-cli GET <key>
+
+```
+
+### benchmark
+```shell
+npx autocannon http://localhost:8080/v1/users/1 --connections 10 --duration 5 -H "Authorization: Bearer <token>"
 ```

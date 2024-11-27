@@ -6,6 +6,7 @@ import (
 	"github.com/Bangseungjae/social/internal/auth"
 	"github.com/Bangseungjae/social/internal/mailer"
 	"github.com/Bangseungjae/social/internal/store"
+	"github.com/Bangseungjae/social/internal/store/cache"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
@@ -21,6 +22,14 @@ type application struct {
 	logger        *zap.SugaredLogger
 	client        mailer.Client
 	authenticator auth.Authenticator
+	cacheStorage  cache.Storage
+}
+
+type redisConfig struct {
+	addr    string
+	pw      string
+	db      int
+	enabled bool
 }
 
 type config struct {
@@ -31,6 +40,7 @@ type config struct {
 	mail        mailConfig
 	frontendURL string
 	auth        authConfig
+	redisCfg    redisConfig
 }
 
 type authConfig struct {

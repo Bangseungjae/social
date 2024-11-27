@@ -2,10 +2,12 @@ package main
 
 import (
 	"github.com/Bangseungjae/social/internal/auth"
-	db2 "github.com/Bangseungjae/social/internal/db"
+	"github.com/Bangseungjae/social/internal/db"
 	"github.com/Bangseungjae/social/internal/env"
 	mailer2 "github.com/Bangseungjae/social/internal/mailer"
 	internalstore "github.com/Bangseungjae/social/internal/store"
+	cache2 "github.com/Bangseungjae/social/internal/store/cache"
+	"github.com/go-redis/redis/v8"
 	"go.uber.org/zap"
 	"time"
 )
@@ -59,13 +61,19 @@ func main() {
 				iss:    "gophersocial",
 			},
 		},
+		redisCfg: redisConfig{
+			addr:    env.GetString("REDIS_ADDR", "localhost:6379"),
+			pw:      env.GetString("REDIS_PW", ""),
+			db:      env.GetInt("REDIS_DB", 0),
+			enabled: env.GetBool("REDIS_ENABLED", false),
+		},
 	}
 
 	// Logger
 	logger := zap.Must(zap.NewProduction()).Sugar()
 	defer logger.Sync()
 
-	db, err := db2.New(
+	db, err := db.New(
 		cfg.db.addr,
 		cfg.db.maxOpenConns,
 		cfg.db.maxIdleConns,
@@ -78,7 +86,15 @@ func main() {
 		logger.Panic(err)
 	}
 
+	// Cache
+	var redisDB *redis.Client
+	if cfg.redisCfg.enabled {
+		redisDB = cache2.NewRedisClient(cfg.redisCfg.addr, cfg.redisCfg.pw, cfg.redisCfg.db)
+		logger.Info("redis cache connection pool established")
+	}
+
 	store := internalstore.NewStorage(db)
+	cacheStore := cache2.NewRedisStore(redisDB)
 
 	mailer := mailer2.NewSendgrid(cfg.mail.sendGrid.apiKey, cfg.mail.sendGrid.fromEmail)
 
@@ -94,6 +110,7 @@ func main() {
 		logger:        logger,
 		client:        mailer,
 		authenticator: jwtAuthenticator,
+		cacheStorage:  cacheStore,
 	}
 
 	mux := app.mount()
