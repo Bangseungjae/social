@@ -15,7 +15,7 @@ type UsersStore struct {
 
 const UserExpTime = time.Minute
 
-func (u UsersStore) Get(ctx context.Context, userID int64) (*store.User, error) {
+func (u *UsersStore) Get(ctx context.Context, userID int64) (*store.User, error) {
 	cacheKey := fmt.Sprintf("user-%d", userID)
 
 	data, err := u.redisDB.Get(ctx, cacheKey).Result()
@@ -36,7 +36,7 @@ func (u UsersStore) Get(ctx context.Context, userID int64) (*store.User, error) 
 	return &user, nil
 }
 
-func (u UsersStore) Set(ctx context.Context, user *store.User) error {
+func (u *UsersStore) Set(ctx context.Context, user *store.User) error {
 	cacheKey := fmt.Sprintf("user-%v", user.ID)
 
 	json, err := json.Marshal(user)
@@ -46,4 +46,9 @@ func (u UsersStore) Set(ctx context.Context, user *store.User) error {
 
 	// EX -> 만료시간이 있는
 	return u.redisDB.SetEX(ctx, cacheKey, json, UserExpTime).Err()
+}
+
+func (s *UsersStore) Delete(ctx context.Context, userID int64) {
+	cacheKey := fmt.Sprintf("user-%d", userID)
+	s.redisDB.Del(ctx, cacheKey)
 }

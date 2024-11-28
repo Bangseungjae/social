@@ -73,7 +73,7 @@ func (app *application) unauthorizedErrorResponse(w http.ResponseWriter, r *http
 		"error", err.Error(),
 	)
 
-	writeJSONError(w, http.StatusNotFound, "unauthorized")
+	writeJSONError(w, http.StatusUnauthorized, "unauthorized")
 }
 
 func (app *application) forbiddenResponse(w http.ResponseWriter, r *http.Request) {
