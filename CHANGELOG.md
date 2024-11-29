@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/Bangseungjae/social/compare/v1.1.0...v1.2.0) (2024-11-29)
+
+
+### Features
+
+* change version ([4793931](https://github.com/Bangseungjae/social/commit/479393185111c76b9f4356389eff35029a7a4a9b))
+
 ## [1.1.0](https://github.com/Bangseungjae/social/compare/v1.0.0...v1.1.0) (2024-11-29)
 
 
