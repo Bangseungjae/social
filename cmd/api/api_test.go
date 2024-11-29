@@ -39,7 +39,6 @@ func TestRateLimiterMiddleware(t *testing.T) {
 		if err != nil {
 			t.Fatalf("could not send request: %v", err)
 		}
-		defer resp.Body.Close()
 
 		if i < cfg.rateLimiter.RequestsPerTimeFrame {
 			if resp.StatusCode != http.StatusOK {
@@ -50,5 +49,6 @@ func TestRateLimiterMiddleware(t *testing.T) {
 				t.Errorf("expected status too Many requests; got %v", resp.Status)
 			}
 		}
+		resp.Body.Close()
 	}
 }

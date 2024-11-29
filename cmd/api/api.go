@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/Bangseungjae/social/docs"
 	"github.com/Bangseungjae/social/internal/auth"
+	"github.com/Bangseungjae/social/internal/env"
 	"github.com/Bangseungjae/social/internal/mailer"
 	"github.com/Bangseungjae/social/internal/ratelimiter"
 	"github.com/Bangseungjae/social/internal/store"
@@ -90,16 +91,16 @@ func (app *application) mount() http.Handler {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
-	r.Use(app.RateLimiterMiddleware)
-
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"https://*", "http://*"},
+		AllowedOrigins: []string{env.GetString("CORS_ALLOWED_ORIGIN", "http://*")},
+		//AllowedOrigins:   []string{"https://*", "http://*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: false,
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
+	r.Use(app.RateLimiterMiddleware)
 
 	r.Route("/v1", func(r chi.Router) {
 		r.Get("/health", app.healthCheckHandler)
