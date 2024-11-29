@@ -102,7 +102,6 @@ func Seed(store store.Storage, db *sql.DB) {
 	}
 
 	log.Println("Seeding complete")
-	return
 }
 
 func generateComments(num int, users []*store.User, posts []*store.Post) []*store.Comment {
