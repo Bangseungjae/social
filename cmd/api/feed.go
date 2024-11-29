@@ -33,10 +33,10 @@ func (app *application) GetUserFeedHandler(w http.ResponseWriter, r *http.Reques
 	}
 
 	fq, err := fq.Parse(r)
-	//if err != nil {
-	//	app.badRequestResponse(w, r, err)
-	//	return
-	//}
+	if err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
 	if err := Validate.Struct(fq); err != nil {
 		app.badRequestResponse(w, r, err)
 		return

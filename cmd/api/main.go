@@ -11,6 +11,7 @@ import (
 	cache2 "github.com/Bangseungjae/social/internal/store/cache"
 	"github.com/go-redis/redis/v8"
 	"go.uber.org/zap"
+	"log"
 	"runtime"
 	"time"
 )
@@ -81,13 +82,17 @@ func main() {
 	logger := zap.Must(zap.NewProduction()).Sugar()
 	defer logger.Sync()
 
-	db, err := db.New(
+	database, err := db.New(
 		cfg.db.addr,
 		cfg.db.maxOpenConns,
 		cfg.db.maxIdleConns,
 		cfg.db.maxIdleTime,
 	)
-	defer db.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer database.Close()
 	logger.Info("database connection pool establish")
 
 	if err != nil {
@@ -101,7 +106,7 @@ func main() {
 		logger.Info("redis cache connection pool established")
 	}
 
-	store := internalstore.NewStorage(db)
+	store := internalstore.NewStorage(database)
 	cacheStore := cache2.NewRedisStore(redisDB)
 
 	mailer := mailer2.NewSendgrid(cfg.mail.sendGrid.apiKey, cfg.mail.sendGrid.fromEmail)
@@ -131,7 +136,7 @@ func main() {
 	// Metrics collected
 	expvar.NewString("version").Set(version)
 	expvar.Publish("database", expvar.Func(func() any {
-		return db.Stats()
+		return database.Stats()
 	}))
 	expvar.Publish("goroutines", expvar.Func(func() any {
 		return runtime.NumGoroutine()
