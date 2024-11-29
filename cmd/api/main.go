@@ -5,6 +5,7 @@ import (
 	"github.com/Bangseungjae/social/internal/db"
 	"github.com/Bangseungjae/social/internal/env"
 	mailer2 "github.com/Bangseungjae/social/internal/mailer"
+	"github.com/Bangseungjae/social/internal/ratelimiter"
 	internalstore "github.com/Bangseungjae/social/internal/store"
 	cache2 "github.com/Bangseungjae/social/internal/store/cache"
 	"github.com/go-redis/redis/v8"
@@ -67,6 +68,11 @@ func main() {
 			db:      env.GetInt("REDIS_DB", 0),
 			enabled: env.GetBool("REDIS_ENABLED", false),
 		},
+		rateLimiter: ratelimiter.Config{
+			RequestsPerTimeFrame: env.GetInt("RATELIMITER_REQUESTS_COUNT", 20),
+			TimeFrame:            time.Second * 5,
+			Enabled:              env.GetBool("RATE_LIMITER_ENABLED", true),
+		},
 	}
 
 	// Logger
@@ -104,6 +110,12 @@ func main() {
 		cfg.auth.token.iss,
 	)
 
+	// Rate limiter
+	rateLimiter := ratelimiter.NewFixedWindowRateLimiter(
+		cfg.rateLimiter.RequestsPerTimeFrame,
+		cfg.rateLimiter.TimeFrame,
+	)
+
 	app := &application{
 		config:        cfg,
 		store:         store,
@@ -111,6 +123,7 @@ func main() {
 		client:        mailer,
 		authenticator: jwtAuthenticator,
 		cacheStorage:  cacheStore,
+		rateLimiter:   rateLimiter,
 	}
 
 	mux := app.mount()

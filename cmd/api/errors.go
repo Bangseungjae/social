@@ -62,7 +62,7 @@ func (app *application) unauthorizedBasicErrorResponse(w http.ResponseWriter, r 
 	*/
 	w.Header().Set("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)
 
-	writeJSONError(w, http.StatusNotFound, "unauthorized")
+	writeJSONError(w, http.StatusUnauthorized, "unauthorized")
 }
 
 func (app *application) unauthorizedErrorResponse(w http.ResponseWriter, r *http.Request, err error) {
@@ -79,4 +79,12 @@ func (app *application) unauthorizedErrorResponse(w http.ResponseWriter, r *http
 func (app *application) forbiddenResponse(w http.ResponseWriter, r *http.Request) {
 	app.logger.Warnw("forbidden error", "method", r.Method, "path", r.URL.Path, "error")
 	writeJSONError(w, http.StatusForbidden, "forbidden")
+}
+
+func (app *application) rateLimitExceededResponse(w http.ResponseWriter, r *http.Request, retryAfter string) {
+	app.logger.Warnw("rate limit exceeded", "method", r.Method, "path", r.URL.Path)
+
+	w.Header().Set("Retry-After", retryAfter)
+
+	writeJSONError(w, http.StatusTooManyRequests, "rare limit exceeded, retry after: "+retryAfter)
 }

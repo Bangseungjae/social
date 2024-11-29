@@ -7,6 +7,7 @@ import (
 	"github.com/Bangseungjae/social/docs"
 	"github.com/Bangseungjae/social/internal/auth"
 	"github.com/Bangseungjae/social/internal/mailer"
+	"github.com/Bangseungjae/social/internal/ratelimiter"
 	"github.com/Bangseungjae/social/internal/store"
 	"github.com/Bangseungjae/social/internal/store/cache"
 	"github.com/go-chi/chi/v5"
@@ -28,6 +29,7 @@ type application struct {
 	client        mailer.Client
 	authenticator auth.Authenticator
 	cacheStorage  cache.Storage
+	rateLimiter   ratelimiter.Limiter
 }
 
 type redisConfig struct {
@@ -46,6 +48,7 @@ type config struct {
 	frontendURL string
 	auth        authConfig
 	redisCfg    redisConfig
+	rateLimiter ratelimiter.Config
 }
 
 type authConfig struct {
@@ -87,6 +90,7 @@ func (app *application) mount() http.Handler {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(app.RateLimiterMiddleware)
 
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"https://*", "http://*"},
@@ -98,7 +102,8 @@ func (app *application) mount() http.Handler {
 	}))
 
 	r.Route("/v1", func(r chi.Router) {
-		r.With(app.BasicAuthMiddleware()).Get("/health", app.healthCheckHandler)
+		r.Get("/health", app.healthCheckHandler)
+		//r.With(app.BasicAuthMiddleware()).Get("/health", app.healthCheckHandler)
 
 		docsURL := fmt.Sprintf("%s/swagger/doc.json", app.config.addr)
 		r.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL(docsURL)))

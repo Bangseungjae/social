@@ -130,4 +130,5 @@ docker exec -it 1d3f8b90887d redis-cli KEYS "*"
 ### benchmark
 ```shell
 npx autocannon http://localhost:8080/v1/users/1 --connections 10 --duration 5 -H "Authorization: Bearer <token>"
+npx autocannon -r 20 --c 10 --duration 1 --renderStatusCodes http://localhost:8080/v1/users/1 
 ```
