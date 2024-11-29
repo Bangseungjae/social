@@ -3,3 +3,7 @@ GET localhost:8080/v1/health
 Authorization: Basic YWRtaW46YWRtaW4K
 // echo 'admin:admin' | base64
 // YW1kaW46YWRtaW4K
+
+### Metrics
+GET localhost:8080/v1/metrics
+Authorization: Basic YWRtaW46YWRtaW4K

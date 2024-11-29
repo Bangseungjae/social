@@ -1,6 +1,7 @@
 package main
 
 import (
+	"expvar"
 	"github.com/Bangseungjae/social/internal/auth"
 	"github.com/Bangseungjae/social/internal/db"
 	"github.com/Bangseungjae/social/internal/env"
@@ -10,6 +11,7 @@ import (
 	cache2 "github.com/Bangseungjae/social/internal/store/cache"
 	"github.com/go-redis/redis/v8"
 	"go.uber.org/zap"
+	"runtime"
 	"time"
 )
 
@@ -125,6 +127,15 @@ func main() {
 		cacheStorage:  cacheStore,
 		rateLimiter:   rateLimiter,
 	}
+
+	// Metrics collected
+	expvar.NewString("version").Set(version)
+	expvar.Publish("database", expvar.Func(func() any {
+		return db.Stats()
+	}))
+	expvar.Publish("goroutines", expvar.Func(func() any {
+		return runtime.NumGoroutine()
+	}))
 
 	mux := app.mount()
 
