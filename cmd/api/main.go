@@ -16,7 +16,7 @@ import (
 	"time"
 )
 
-const version = "1.1.1"
+const version = "1.1.0"
 
 //	@title			GopherSocial API
 //	@description	API for GopherSocial, a social network for gopher
