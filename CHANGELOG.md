@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/Bangseungjae/social/compare/v1.2.0...v1.3.0) (2024-12-01)
+
+
+### Features
+
+* dockerfile ([1028516](https://github.com/Bangseungjae/social/commit/102851602e9f752497999a2e364a036eb532f916))
+
 ## [1.2.0](https://github.com/Bangseungjae/social/compare/v1.1.0...v1.2.0) (2024-11-29)
 
 
